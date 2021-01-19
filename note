@@ -1,0 +1,40 @@
+////////////////////////////////////////////////////
+            <div class="message-title">
+                    <i class="fas fa-grin-squint"></i> <span>Dev At</span>
+                            </div>
+                            <div class="message-text">
+                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae, beatae!
+                            </div>
+                            <div class="message-time">
+                                april 20
+                            </div>
+
+
+                            
+
+                             socket.on('send to all', (res)=>{
+            display(res, 'other-message')
+        })
+
+
+
+          const display = (msg, type) =>{
+            const msgDiv = document.createElement('div');
+            const className = type;
+            msgDiv.classList.add(className, 'message-row');
+            let times = new Date().toLocaleTimeString()
+
+            let inner = `
+            <div class='message-title'>
+                    <span>${msg.user}</span>
+            </div>
+            <div class='message-text'>
+            ${msg.msg}
+            </div>
+            <div class='message-time'>
+                ${times}
+            </div>
+            `;
+            msgDiv.innerHTML = inner;
+            display.append(msgDiv)
+        }

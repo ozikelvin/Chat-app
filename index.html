@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main APP</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+
+</head>
+<body id="btn">
+    <header>
+        <h3 id="hed">Chat app</h3>
+    </header>
+
+<div id="chat">
+<!--Login place-->
+   <div class="jumbotron" id="formArea">
+    <div class="container" >
+        <div id="log">
+            <h2>Login</h2>
+        </div>
+        <h4 id="err"></h4>
+    <form id="userform" >
+        <div class="form-group">
+            <label for="username">User Name</label>
+            <input type="text" id="name" class="form-control" required >
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="logPass" class="form-control" required >
+        </div>
+        <input type="submit" class="btn btn-success">
+    </form>
+</div>
+</div>
+
+<!--Registration place-->
+<div class="jumbotron" id="regArea">
+    <div class="container" >
+        <div id="log">
+            <h2>Register</h2>
+        </div>
+
+    <form id="regform" >
+        <div class="form-group">
+            <label for="username">User Name</label>
+            <input type="text" id="Regname" class="form-control" required >
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="pass" class="form-control" required >
+        </div>
+        <input type="submit" class="btn btn-success">
+
+    </form>
+
+</div>
+</div>
+<input type="submit" value="Login" class="btn btn-primary" id="loginUser">
+ <!--Chat center place-->
+<div class="chat-container">
+<div class="chat-header">
+    <div class="log">
+        <i class="fab fa-facebook-messenger"></i>
+        <h3>Messenger</h3>
+    </div>
+
+</div>
+
+<!-- ////////////////////////////////////////// -->
+<div class="chat-section">
+        <div class="row">
+            <div class="col-md-4">
+                <h3>Online Users</h3>
+                <div class="jumb" id="users" >
+
+                </div>
+            </div>
+            <div class="col-md-8">
+
+                    <div class="main-wrapper">
+                        <div class="chat-content">
+                            <div class="message">
+
+
+                            </div>
+                        </div>
+                         <!-- //////////////////////////////////////////////////// -->
+                         <form class="msg-tex" id="textForm" >
+                            <input type="text"  id="msg" placeholder="Type Message here....." autocomplete="off" required>
+                            <button id="btn-send">
+                                <i class="fas fa-paper-plane"> Send</i>
+                            </button>
+                         </form>
+
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="main.js"></script>
+
+</body>
+</html>
