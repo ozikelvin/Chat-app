@@ -85,6 +85,7 @@ io.on('connection', (socket)=>{
     console.log('New connetion : ' + connection.length);
 
     socket.on('disconnect', (sockets)=>{
+       // users.splice(users.indexOf(socket.username), 1)
         delete users[socket.username]
         getUsers();
         connection.splice(connection.indexOf(socket), 1)
@@ -124,10 +125,15 @@ io.on('connection', (socket)=>{
 
    })
    socket.on('log user', (data, callback)=>{
-            callback(true)
-      socket.username = data;
-      users[socket.username]= socket;
-       getUsers()
+       if(data in users){
+           callback(false)
+       }else{
+        callback(true)
+        socket.username = data;
+        
+        users[socket.username]= socket;
+         getUsers()
+       }
 
    })
 

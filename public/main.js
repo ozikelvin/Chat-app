@@ -116,7 +116,7 @@ socket.on('reg user', ()=>{
                     formArea.hide();
                     chatBox.show();
                 }else{
-                    err.html(`<div class='alert alert-danger'>Sorry!! This User is already here pick a new Nickname</div>`)
+                    err.html(`<div class='alert alert-danger'>Sorry!! This User is already Logged in </div>`)
                 }
             });
 
