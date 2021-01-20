@@ -105,20 +105,33 @@ socket.on('reg user', ()=>{
            logPass.val('');
         });
 
+
+
+
+
         socket.on('new user', (data)=>{
             // console.log(data.message);
             // console.log(data.user);
             // socket.emit('log user', data.user);
             // formArea.hide();
             // chatBox.show();
+
             socket.emit('log user', data.user, function(data){
+                console.log(data)
                 if(data){
                     formArea.hide();
                     chatBox.show();
+
                 }else{
-                    err.html(`<div class='alert alert-danger'>Sorry!! This User is already Logged in </div>`)
+                 return  err.html(`<div class='alert alert-danger'>Sorry!! This User is already Logged in </div>`);
                 }
             });
+             users.append(`
+            <ul class='list-group'>
+            <li class='list-group-item'><strong>${data.user}</strong></li>
+            </ul>
+            `)
+            display.append(`<strong>${data.user}</strong><strong >${data.message}</strong>`)
 
             });
 

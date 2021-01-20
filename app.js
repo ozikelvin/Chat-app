@@ -21,6 +21,7 @@ app.use((req, res, next)=>{
 app.get('/', (req, res)=>{
     res.sendFile(__dirname + '/index.html')
 })
+// Register a new user
 app.post('/reg', async(req, res)=>{
     let user = req.body.user;
     let password =await bcrypt.hash(req.body.password, 10);
@@ -42,6 +43,8 @@ app.post('/reg', async(req, res)=>{
     .catch((err) => console.log(err))
 
 })
+
+// Login User route
 app.post('/newUser', async(req, res)=>{
 
     Chat.findOne({user: req.body.user}).exec()
@@ -58,7 +61,15 @@ app.post('/newUser', async(req, res)=>{
              }else{
                     console.log('Login Successful');
                     res.status(200).json({message: 'Login successful'});
-                    req.io.emit('new user', {message: 'Login Successful', user: done.user})
+                    req.io.emit('new user', {message: 'Logged in Successful', user: done.user})
+                   // console.log(done.user)
+                   // req.io.emit('check user', {user: done.user});
+                   // req.io.on('enter', (done)=>{
+                     //   if(done === true){
+
+                    //     }
+                    // })
+
 
                     Chat.find({}).limit(1)
     .exec()
@@ -126,20 +137,20 @@ io.on('connection', (socket)=>{
    })
    socket.on('log user', (data, callback)=>{
        if(data in users){
+           //console.log(data)
            callback(false)
        }else{
         callback(true)
         socket.username = data;
-        
         users[socket.username]= socket;
-         getUsers()
+        getUsers()
        }
 
    })
 
         function getUsers(){
-
             socket.emit('get users', Object.keys(users))
+
         }
 });
 
