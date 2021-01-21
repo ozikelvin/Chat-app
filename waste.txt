@@ -287,3 +287,11 @@ Chat.findOne({user: req.body.user}).exec()
      })
 ////////////////////////////////////////////////
 Object.keys(users)
+//////////////////////////////////////////////////////////////////////////////
+ // console.log(done.user)
+                   // req.io.emit('check user', {user: done.user});
+                   // req.io.on('enter', (done)=>{
+                     //   if(done === true){
+
+                    //     }
+                    // })

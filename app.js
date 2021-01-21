@@ -4,6 +4,8 @@ const port = process.env.PORT || 3000;
 const http = require('http').createServer(app);
 const io = require('socket.io')(http);
 const mongoose = require('mongoose');
+const session = require('express-session');
+const cookieParser = require('cookie-parser');
 const Db = require('./server');
 const Chat = require('./chat');
 const bcrypt = require('bcrypt');
@@ -12,13 +14,38 @@ let connection = [];
 let users = {};
 
 app.use(express.static(path.join(__dirname, 'public')))
+app.use(cookieParser());
+app.use(
+    session({
+        key: 'user_sid',
+        secret: 'something',
+        resave: false,
+        saveUninitialized: false,
+        cookie: {
+            expires: 20000
+        }
+    })
+)
 app.use(express.json());
 app.use((req, res, next)=>{
     req.io = io;
+    if(req.session.user && req.cookies.user_sid){
+        req.io.emit('back to chat', {message: 'Back to chat'})
+    }
     next();
 })
 
-app.get('/', (req, res)=>{
+let sessionChecker = (req, res, next)=>{
+    if(req.session.user && req.session.user_sid){
+        req.io.emit('back to chat', {message: 'Back to chat'})
+    //    res.redirect('/chat')
+    }else{
+        next()
+    }
+}
+
+app.get('/', sessionChecker, (req, res)=>{
+    //res.redirect('/login')
     res.sendFile(__dirname + '/index.html')
 })
 // Register a new user
@@ -34,6 +61,8 @@ app.post('/reg', async(req, res)=>{
         }else{
             newUser.save((err, data)=>{
                 if(err)  throw err ;
+               // req.session.user = data;
+               // res.redirect('/chat')
                 req.io.emit('reg user', {message: 'Registered User Successfully'})
                 console.log(data)
                 res.status(200).json({message: 'Successfully Registered User'})
@@ -43,6 +72,23 @@ app.post('/reg', async(req, res)=>{
     .catch((err) => console.log(err))
 
 })
+// Get login form
+// app.get('/login', sessionChecker, (req, res)=>{
+//     res.sendFile(__dirname + '/login.html')
+// });
+// Get registration form
+// app.get('/reg', sessionChecker, (req, res)=>{
+//     res.sendFile(__dirname + '/reg.html')
+// })
+// Get Chat page
+
+// app.get('/chat', (req, res)=>{
+//     if(req.session.user && req.session.user_sid){
+//         res.sendFile(__dirname + '/chat.html')
+//     }else{
+//         res.redirect('/login')
+//     }
+// })
 
 // Login User route
 app.post('/newUser', async(req, res)=>{
@@ -59,16 +105,16 @@ app.post('/newUser', async(req, res)=>{
                 req.io.emit('wrong username', {message: 'Wrong Username or Password'})
                  console.log('Wrong password try Again')
              }else{
-                    console.log('Login Successful');
-                    res.status(200).json({message: 'Login successful'});
-                    req.io.emit('new user', {message: 'Logged in Successful', user: done.user})
-                   // console.log(done.user)
-                   // req.io.emit('check user', {user: done.user});
-                   // req.io.on('enter', (done)=>{
-                     //   if(done === true){
 
-                    //     }
-                    // })
+                    if(done.user in users){
+                        req.io.emit('block', {message: 'User already logged in'})
+                     }else{
+                        console.log('Login Successful');
+                        res.status(200).json({message: 'Login successful'});
+                        req.io.emit('new user', {message: 'Logged in Successful', user: done.user})
+                        console.log(done.user)
+                     }
+
 
 
                     Chat.find({}).limit(1)
@@ -135,6 +181,13 @@ io.on('connection', (socket)=>{
         }
 
    })
+        // socket.on('log user', (data)=>{
+        //     socket.username = data;
+        //     users[socket.username]= socket;
+        //     getUsers()
+
+        //   })
+
    socket.on('log user', (data, callback)=>{
        if(data in users){
            //console.log(data)

@@ -57,6 +57,7 @@ socket.emit('send message', msgText.val(), function(data){
 msgText.val('')
 })
 
+
         socket.on('reg user', (data)=>{
             console.log(data.message)
             display.append(`<strong >${data.message}</strong>`)
@@ -106,8 +107,16 @@ socket.on('reg user', ()=>{
         });
 
 
+        socket.on('block', (data)=>{
 
+            err.html(`<div class='alert alert-danger'>${data.message} </div>`);
+        })
 
+        socket.on('back to chat', (data)=>{
+            reg.hide();
+            formArea.hide();
+            chatBox.show();
+        })
 
         socket.on('new user', (data)=>{
             // console.log(data.message);
@@ -116,16 +125,16 @@ socket.on('reg user', ()=>{
             // formArea.hide();
             // chatBox.show();
 
+           // socket.emit('log user', data.user)
             socket.emit('log user', data.user, function(data){
                 console.log(data)
                 if(data){
+
                     formArea.hide();
                     chatBox.show();
-
-                }else{
-                 return  err.html(`<div class='alert alert-danger'>Sorry!! This User is already Logged in </div>`);
                 }
             });
+
              users.append(`
             <ul class='list-group'>
             <li class='list-group-item'><strong>${data.user}</strong></li>
