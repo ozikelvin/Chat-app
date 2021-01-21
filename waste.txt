@@ -295,3 +295,23 @@ Object.keys(users)
 
                     //     }
                     // })
+////////////////////////////////////////////////
+// Get login form
+// app.get('/login', sessionChecker, (req, res)=>{
+//     res.sendFile(__dirname + '/login.html')
+// });
+// Get registration form
+// app.get('/reg', sessionChecker, (req, res)=>{
+//     res.sendFile(__dirname + '/reg.html')
+// })
+// Get Chat page
+
+// app.get('/chat', (req, res)=>{
+//     if(req.session.user && req.session.user_sid){
+//         res.sendFile(__dirname + '/chat.html')
+//     }else{
+//         res.redirect('/login')
+//     }
+// })
+
+// Login User route

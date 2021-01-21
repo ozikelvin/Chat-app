@@ -6,8 +6,10 @@ const io = require('socket.io')(http);
 const mongoose = require('mongoose');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
-const Db = require('./server');
-const Chat = require('./chat');
+const Db = require('./models/server');
+const Chat = require('./models/chat');
+const login = require('./controller/login');
+const reg = require('./controller/reg')
 const bcrypt = require('bcrypt');
 const path = require('path');
 let connection = [];
@@ -48,95 +50,11 @@ app.get('/', sessionChecker, (req, res)=>{
     //res.redirect('/login')
     res.sendFile(__dirname + '/index.html')
 })
-// Register a new user
-app.post('/reg', async(req, res)=>{
-    let user = req.body.user;
-    let password =await bcrypt.hash(req.body.password, 10);
-    let newUser = new Chat({user: user, password:password});
-    Chat.findOne({user: user})
-    .exec()
-    .then(done => {
-        if(done){
-            console.log('User with username has been choosen select another user')
-        }else{
-            newUser.save((err, data)=>{
-                if(err)  throw err ;
-               // req.session.user = data;
-               // res.redirect('/chat')
-                req.io.emit('reg user', {message: 'Registered User Successfully'})
-                console.log(data)
-                res.status(200).json({message: 'Successfully Registered User'})
-            })
-        }
-    })
-    .catch((err) => console.log(err))
+app.use(login);
+app.use(reg);
 
-})
-// Get login form
-// app.get('/login', sessionChecker, (req, res)=>{
-//     res.sendFile(__dirname + '/login.html')
-// });
-// Get registration form
-// app.get('/reg', sessionChecker, (req, res)=>{
-//     res.sendFile(__dirname + '/reg.html')
-// })
-// Get Chat page
-
-// app.get('/chat', (req, res)=>{
-//     if(req.session.user && req.session.user_sid){
-//         res.sendFile(__dirname + '/chat.html')
-//     }else{
-//         res.redirect('/login')
-//     }
-// })
-
-// Login User route
-app.post('/newUser', async(req, res)=>{
-
-    Chat.findOne({user: req.body.user}).exec()
-     .then(async(done) =>{
-         if(!done) {
-             req.io.emit('wrong username', {message: 'Wrong Username or Password'})
-             console.log('Wrong User name ')
-         }else{
-             console.log(done.password);
-             let login = await bcrypt.compare(req.body.password, done.password)
-             if(!login){
-                req.io.emit('wrong username', {message: 'Wrong Username or Password'})
-                 console.log('Wrong password try Again')
-             }else{
-
-                    if(done.user in users){
-                        req.io.emit('block', {message: 'User already logged in'})
-                     }else{
-                        console.log('Login Successful');
-                        res.status(200).json({message: 'Login successful'});
-                        req.io.emit('new user', {message: 'Logged in Successful', user: done.user})
-                        console.log(done.user)
-                     }
-
-
-
-                    Chat.find({}).limit(1)
-    .exec()
-    .then((data)=>{
-        if(data){
-            console.log('Gotten All messages');
-            req.io.emit('load message', data)
-        }
-
-    })
-    .catch((err) =>{
-        throw err
-    })
-             }
-         }
-     })
-})
 
 io.on('connection', (socket)=>{
-
-
 
     connection.push(socket);
     console.log('New connetion : ' + connection.length);
